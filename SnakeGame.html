@@ -1,0 +1,135 @@
+<html>
+
+<head>
+    <title>
+        My First Canvas Page
+    </title>
+</head>
+
+<style>
+    html,
+    body {
+        margin: 30;
+        height: 80%;
+    }
+
+    canvas {
+
+        border: 8px solid rgb(143, 89, 20);
+    }
+</style>
+
+<body>
+
+    <canvas id="game" width="600px" height="500px" style="border:1px solid red;">
+        Browser not supported
+    </canvas>
+
+</body>
+<script>
+    var canvasa = document.getElementById("game");
+    var ctx = canvasa.getContext("2d");
+    var grid = 16, count = 0;
+    var snake = {
+        x: 260, y: 160,
+        dx: grid, dy: 0,
+        cells: [],
+        maxcells: 5
+    }
+    var apple = {
+        x: 160, y: 160
+    }
+    function getRandomInt(max, min) {
+        return Math.floor(Math.random() * (max - min) + min);
+    }
+    function loop() {
+        requestAnimationFrame(loop);
+
+
+
+        if (count++ < 10) {
+            return;
+        }
+        count = 0;
+        ctx.clearRect(0, 0, canvasa.width, canvasa.height);
+
+        snake.x += snake.dx;
+        snake.y += snake.dy;
+
+        if (snake.x < 0) {
+            snake.x = canvasa.width - grid;
+        }
+        else if (snake.x >= canvasa.width) {
+            snake.x = 0;
+        }
+
+        if (snake.y < 0) {
+            snake.y = canvasa.height - grid;
+        }
+        else if (snake.y >= canvasa.height) {
+            snake.y = 0;
+        }
+
+        snake.cells.unshift({ x: snake.x, y: snake.y });
+        if (snake.cells.length > snake.maxCells) {
+            snake.cells.pop();
+        }
+
+        if (snake.cells.length > snake.maxcells) {
+            snake.cells.pop();
+        }
+
+        ctx.fillStyle = "red";
+        ctx.fillRect(apple.x, apple.y, grid - 1, grid - 1);
+
+
+
+        ctx.fillStyle = "green";
+        snake.cells.forEach(function (cell, index) {
+            ctx.fillRect(cell.x, cell.y, grid - 1, grid - 1);
+
+            if (cell.x === apple.x && cell.y === apple.y) {
+
+                snake.maxCells++;
+                apple.x = getRandomInt(0, 25) * grid;
+                apple.y = getRandomInt(0, 25) * grid;
+            }
+
+        });
+    }
+    document.addEventListener('keydown', function (e) {
+        // prevent snake from backtracking on itself by checking that it's 
+
+        // left won't do anything, and pressing right while moving left
+        // shouldn't let you collide with your own body)
+
+        // left arrow key  | key code of left  button=37
+        if (e.which === 37 && snake.dx === 0) {
+            snake.dx = -grid;
+            snake.dy = 0;
+        }
+        // up arrow key | key code of up  button=38
+        else if (e.which === 38 && snake.dy === 0) {
+            snake.dy = -grid;
+            snake.dx = 0;
+        }
+        // right arrow key | key code of right  button=39
+        else if (e.which === 39 && snake.dx === 0) {
+            snake.dx = grid;
+            snake.dy = 0;
+        }
+        // down arrow key | key code of down  button=40
+
+        else if (e.which === 40 && snake.dy === 0) {
+            snake.dy = grid;
+            snake.dx = 0;
+        }
+    });
+
+    // start the game
+    requestAnimationFrame(loop);
+
+
+</script>
+
+</html>
